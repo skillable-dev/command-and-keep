@@ -4,13 +4,18 @@
   "private": true,
   "type": "module",
   "description": "Skillable runtime PoC: six MCP tools over a skill pack and a local evidence ledger",
-  "bin": { "skillable-mcp": "dist/index.js" },
+  "bin": {
+    "skillable-mcp": "dist/index.js"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test": "tsx --test tests/*.test.ts",
-    "validate": "tsx src/validate.ts ../packs/command-and-keep"
+    "validate": "tsx src/validate.ts ../skills/command-and-keep",
+    "bundle": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/skillable-mcp.js --banner:js=\"#!/usr/bin/env node\nimport { createRequire } from \\\"node:module\\\"; const require = createRequire(import.meta.url);\"",
+    "bundle:cli": "esbuild src/cli.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/skillable-cli.js --banner:js=\"#!/usr/bin/env node\nimport { createRequire } from \\\"node:module\\\"; const require = createRequire(import.meta.url);\"",
+    "release": "npm run build && npm run bundle && npm run bundle:cli"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
@@ -19,6 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "esbuild": "^0.28.2",
     "tsx": "^4.23.12",
     "typescript": "^5.6.0"
   }

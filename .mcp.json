@@ -2,7 +2,7 @@
   "mcpServers": {
     "skillable": {
       "command": "node",
-      "args": ["server/dist/index.js"]
+      "args": ["${CLAUDE_PLUGIN_ROOT}/server/dist/skillable-mcp.js"]
     }
   }
 }

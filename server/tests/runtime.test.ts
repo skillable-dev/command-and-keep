@@ -7,7 +7,7 @@ import { Ledger, emptyLedger } from "../src/ledger.js";
 import { Runtime, RuntimeError, type ScoreInput } from "../src/runtime.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const PACK = join(here, "..", "..", "packs", "command-and-keep");
+const PACK = join(here, "..", "..", "skills", "command-and-keep");
 
 function fixedClock(start = "2026-09-01T09:00:00Z") {
   let t = new Date(start);

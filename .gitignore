@@ -1,5 +1,7 @@
 node_modules/
-server/dist/
+server/dist/*
+!server/dist/skillable-mcp.js
+!server/dist/skillable-cli.js
 *.tmp
 .DS_Store
 ledger.json

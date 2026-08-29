@@ -11,7 +11,7 @@ import { Ledger } from "./ledger.js";
 import { Runtime, RuntimeError } from "./runtime.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const packDir = resolve(process.env.SKILLABLE_PACK ?? join(here, "..", "..", "packs", "command-and-keep"));
+const packDir = resolve(process.env.SKILLABLE_PACK ?? join(here, "..", "..", "skills", "command-and-keep"));
 const ledgerPath = resolve(process.env.SKILLABLE_LEDGER ?? join(homedir(), ".skillable", "command-and-keep", "ledger.json"));
 
 const pack = loadPack(packDir);

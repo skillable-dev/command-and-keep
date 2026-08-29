@@ -1,0 +1,13 @@
+{
+  "name": "skillable",
+  "owner": { "name": "Skillable", "url": "https://skillable.dev" },
+  "plugins": [
+    {
+      "name": "command-and-keep",
+      "source": "./",
+      "description": "Command & Keep: a 14-day coached campaign in your own agent. Six Command capabilities (brief, equip, connect, orchestrate, verify, constrain) and six Keep capabilities (judgment, lead, create, ethics, notice, resilience), with rubric-scored evidence and an honest credential preview.",
+      "version": "0.1.0",
+      "author": { "name": "Skillable" }
+    }
+  ]
+}

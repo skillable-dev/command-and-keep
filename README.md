@@ -4,7 +4,7 @@ The first proof of concept for agent-native Skillable: **one skill pack, six MCP
 The learner runs a 14-day campaign inside their own Claude (or any MCP + Agent Skills client). Their assistant is the coach; this server is the runtime and the ledger.
 
 ```
-packs/command-and-keep/     the course, as a folder (Agent Skills spec + Skillable extensions)
+skills/command-and-keep/     the course, as a folder (Agent Skills spec + Skillable extensions)
   SKILL.md                  coach instructions and the tool protocol — this is the UX
   campaign.yaml             14 days, two halves, the learner contract
   capabilities.yaml         12 observable capabilities with a "tell" and a review prompt
@@ -16,21 +16,39 @@ packs/command-and-keep/     the course, as a folder (Agent Skills spec + Skillab
   safety.json               interrupt budget, hours, prohibitions
   credential.json           what the badge claims and how it decays
 server/                     the runtime: six MCP tools over the pack and a JSON ledger
+.claude-plugin/             plugin + marketplace manifests (Claude Code)
+.mcp.json                   registers the bundled server when installed as a plugin
 ```
 
-## Install (Claude Code, ~1 minute)
+## Install
 
-```bash
-./scripts/install-skill.sh
+**Claude Code (as a plugin, recommended)**
+
+```
+/plugin marketplace add advatar/command-and-keep
+/plugin install command-and-keep@skillable
 ```
 
-This symlinks the pack into `~/.claude/skills/`, builds the server and runs the publishing gates. Open this folder in Claude Code (`.mcp.json` registers the `skillable` server) and say:
+That installs the skill and the `skillable` MCP server together (pre-bundled; no npm step). Then say:
 
 > Start my Command & Keep campaign.
 
-For Claude Desktop, add the server to `claude_desktop_config.json` (the script prints the snippet) and copy the pack into your skills directory.
+**Any Agent Skills client (Codex, Copilot, Cursor, Gemini CLI, …)**
 
-The ledger lives at `~/.skillable/command-and-keep/ledger.json`. Read it any time; that is "what have you stored about me". Delete it to start over. `SKILLABLE_LEDGER` and `SKILLABLE_PACK` override the paths.
+Copy or symlink `skills/command-and-keep/` into your client's skills directory (e.g. `npx skills add advatar/command-and-keep`), and run the runtime as a stdio MCP server:
+
+```
+node server/dist/skillable-mcp.js
+```
+
+**Local development**
+
+```bash
+./scripts/install-skill.sh      # symlinks the skill into ~/.claude/skills, builds, validates
+claude mcp add skillable -- node "$PWD/server/dist/skillable-mcp.js"
+```
+
+The ledger lives at `~/.skillable/command-and-keep/ledger.json`. Read it any time; that is "what have you stored about me". Delete it to start over. `SKILLABLE_LEDGER` and `SKILLABLE_PACK` override the paths. `server/dist/skillable-cli.js <tool> '<json>'` calls the same six operations without MCP (useful for human review of the ledger).
 
 ## The six tools
 
