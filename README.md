@@ -25,7 +25,7 @@ server/                     the runtime: six MCP tools over the pack and a JSON 
 **Claude Code (as a plugin, recommended)**
 
 ```
-/plugin marketplace add advatar/command-and-keep
+/plugin marketplace add skillable-dev/command-and-keep
 /plugin install command-and-keep@skillable
 ```
 
@@ -35,7 +35,7 @@ That installs the skill and the `skillable` MCP server together (pre-bundled; no
 
 **Any Agent Skills client (Codex, Copilot, Cursor, Gemini CLI, …)**
 
-Copy or symlink `skills/command-and-keep/` into your client's skills directory (e.g. `npx skills add advatar/command-and-keep`), and run the runtime as a stdio MCP server:
+Copy or symlink `skills/command-and-keep/` into your client's skills directory (e.g. `npx skills add skillable-dev/command-and-keep`), and run the runtime as a stdio MCP server:
 
 ```
 node server/dist/skillable-mcp.js

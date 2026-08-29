@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "author": { "name": "Skillable", "url": "https://skillable.dev" },
   "homepage": "https://skillable.dev",
-  "repository": "https://github.com/advatar/command-and-keep",
+  "repository": "https://github.com/skillable-dev/command-and-keep",
   "license": "MIT",
   "keywords": ["learning", "skills", "agents", "coaching", "evidence", "credential", "skillable"]
 }
