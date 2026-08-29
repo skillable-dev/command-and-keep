@@ -1,0 +1,23 @@
+capability: constrain
+dimensions:
+  - id: before
+    name: Limits set before action
+    levels:
+      1: No limits considered.
+      2: Limits considered after the first action.
+      3: Before acting, states what the agent may send, spend, delete, and to whom, and how the limit is enforced.
+      4: As 3, and defines the escalation trigger.
+  - id: escalation
+    name: Escalation timing
+    levels:
+      1: Notices the problem after the consequence.
+      2: Notices in time, hesitates.
+      3: Escalates or halts at the right moment with a one-sentence reason.
+      4: As 3, and the halt is clean (nothing half-done).
+  - id: recovery
+    name: Recovery
+    levels:
+      1: Explains that the agent did it.
+      2: Fixes the immediate consequence only.
+      3: Contains, corrects, and changes the constraint that allowed it.
+      4: As 3, and communicates to those affected without blaming the tool.

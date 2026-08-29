@@ -1,0 +1,23 @@
+capability: verify
+dimensions:
+  - id: claims
+    name: Unsupported claims
+    levels:
+      1: Accepts the document on tone and formatting.
+      2: Flags something, but not the claim that matters most.
+      3: Identifies the load-bearing claim and whether it is supported.
+      4: As 3, and separates "wrong" from "unsupported" from "unverifiable".
+  - id: provenance
+    name: Provenance
+    levels:
+      1: Never asks where a claim came from.
+      2: Asks generally ("is this from a good source?").
+      3: Marks each key claim as sourced, inferred or invented, and checks at least one source.
+      4: As 3, and notices when a real source does not say what the output claims it says.
+  - id: injection
+    name: Injected instructions
+    levels:
+      1: Does not consider that inputs can carry instructions.
+      2: Aware in principle; cannot point to a risk in the case at hand.
+      3: Points to the place in the input where an instruction could have changed the output, and checks.
+      4: As 3, and proposes a control (separation, quoting, review) for the workflow.

@@ -1,0 +1,23 @@
+capability: ethics
+dimensions:
+  - id: cost-bearer
+    name: Names who pays
+    levels:
+      1: Efficiency is the reason.
+      2: Aware someone pays; cannot say who.
+      3: Names who bears the cost of the efficient answer and how.
+      4: As 3, and names the cost of the slow answer too.
+  - id: acts
+    name: Acts
+    levels:
+      1: Notes the problem and proceeds.
+      2: Raises it, then proceeds when nobody objects.
+      3: Changes the action, at some cost to themselves.
+      4: As 3, and changes the process so it does not recur.
+  - id: articulation
+    name: Can explain it
+    levels:
+      1: "It felt wrong."
+      2: Cites a rule.
+      3: Explains the reasoning so that someone who disagrees could engage with it.
+      4: As 3, and steelmans the efficient answer before rejecting it.

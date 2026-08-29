@@ -1,0 +1,23 @@
+id: command-and-keep
+title: Command & Keep
+version: 0.1.0
+duration_days: 14
+intensities: [guided, adaptive, immersive]
+default_intensity: adaptive
+halves:
+  command: { days: [1, 6], capabilities: [brief, equip, connect, orchestrate, verify, constrain] }
+  keep: { days: [7, 12], capabilities: [judgment, lead, create, ethics, notice, resilience] }
+capstone: d13-the-incident
+retrospective: d14-retrospective
+diagnostic: d0-diagnostic
+contract: |
+  This is a 14-day campaign run by your own AI assistant, using a Skillable skill pack.
+  What it asks of you: about 20 minutes a day, on your real work where possible. One mission a day,
+  short unaided reviews on some days, a timed capstone on day 13.
+  What it records: each attempt (your evidence, the rubric scores, how many hints you used, whether the
+  assistant did any of the work, your own confidence) in a local ledger you can read at any time.
+  What it does not record: the content of your calendar, your messages, or anything you do not paste in.
+  What you can always do: say "pause" to stop recording, "reality check" to be told what is simulation
+  and what is real, or "what have you stored" to hear the ledger.
+  What you get: a plain record of what you can do, with evidence, and an honest list of what you can't yet.
+  The assistant will coach you but will not do the missions for you. That is the point.

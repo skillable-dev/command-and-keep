@@ -1,0 +1,81 @@
+# Common ways people get each capability wrong, the tell, and the repair the coach should point to.
+- id: brief.vague-done
+  capability: brief
+  tell: The brief says what to do but not how anyone would know it is done right.
+  repair: Add one acceptance test the learner could hand to a stranger to run.
+- id: brief.hidden-context
+  capability: brief
+  tell: The brief assumes context that lives only in the learner's head (who the audience is, what "good" looks like here).
+  repair: Ask "what does the agent not know that you know?" and write those three things down.
+- id: equip.fix-the-output
+  capability: equip
+  tell: When the skill produces something wrong, the learner edits the result instead of the skill.
+  repair: 'Rule: every deviation becomes a line in the skill. Re-run to check.'
+- id: equip.procedure-as-prose
+  capability: equip
+  tell: The skill file is a description of the job, not the decisions inside it.
+  repair: Rewrite as "when X, do Y, because Z" lines; delete the rest.
+- id: connect.talk-vs-act
+  capability: connect
+  tell: The learner thinks a chat that "knows about" a tool is the same as an agent that can use it.
+  repair: Ask "what can it do now that it could not do before the connection?" If the answer is "answer questions", nothing was connected.
+- id: connect.no-forbidden-list
+  capability: connect
+  tell: The learner grants access without naming what the agent must never do with it.
+  repair: Before connecting anything, write one forbidden action and how it is prevented.
+- id: orchestrate.trust-everything
+  capability: orchestrate
+  tell: Every step is trusted, or every step is checked; no judgement about which is which.
+  repair: Ask "which step would embarrass you if it were wrong?" Checkpoint that one.
+- id: orchestrate.monolith
+  capability: orchestrate
+  tell: The whole job is one prompt.
+  repair: Split until each step has a single output someone could inspect.
+- id: verify.tone-as-truth
+  capability: verify
+  tell: The learner trusts confident, well-formatted text.
+  repair: Read for the claim, not the tone. Which sentence would you have to defend in a meeting?
+- id: verify.no-provenance
+  capability: verify
+  tell: Claims are accepted without asking where they came from.
+  repair: For each key claim, ask "source or inference?" and mark it.
+- id: verify.injection-blind
+  capability: verify
+  tell: The learner does not consider that the input itself may contain instructions to the agent.
+  repair: Point at one line in the input that, if it were an instruction, would change the output.
+- id: constrain.after-the-fact
+  capability: constrain
+  tell: Limits are only considered after something goes wrong.
+  repair: 'Set the limit before the first action: what can it send, spend, delete, and to whom?'
+- id: constrain.blame-the-tool
+  capability: constrain
+  tell: Recovery consists of explaining that the agent did it.
+  repair: 'Recovery has three parts: contain, correct, change the constraint. Do all three.'
+- id: judgment.wait-for-certainty
+  capability: judgment
+  tell: The decision is deferred until information arrives that will not arrive.
+  repair: Decide now, and write down what evidence would make you reverse it.
+- id: judgment.outsourced
+  capability: judgment
+  tell: '"The model recommended it" is offered as the reason.'
+  repair: Ask "and if the model had said the opposite, what would you have done?"
+- id: lead.false-certainty
+  capability: lead
+  tell: The learner projects a plan they do not have to keep people calm.
+  repair: Say what is known, what is not, and what happens next regardless.
+- id: create.first-option
+  capability: create
+  tell: The first workable option is treated as the answer.
+  repair: Generate a third option that violates an assumption the first two share.
+- id: ethics.efficiency-as-reason
+  capability: ethics
+  tell: '"It was faster" is accepted as sufficient justification.'
+  repair: Name who bears the cost of the fast answer. Then decide.
+- id: notice.frame-blind
+  capability: notice
+  tell: The learner evaluates an output only within the frame the output set.
+  repair: Ask "what question was this not answering?"
+- id: resilience.reflex-delegation
+  capability: resilience
+  tell: When something breaks, the next decision goes to the tool by reflex.
+  repair: 'First minute: state the situation in one sentence, decide the next action yourself, then use tools.'

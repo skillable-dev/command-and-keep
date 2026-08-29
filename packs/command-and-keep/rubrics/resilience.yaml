@@ -1,0 +1,23 @@
+capability: resilience
+dimensions:
+  - id: first-minute
+    name: The first minute
+    levels:
+      1: Reacts; hands the next step to the tool by reflex.
+      2: Pauses, then asks the tool what to do.
+      3: States the situation in one sentence and decides the next action themselves.
+      4: As 3, and decides what not to do yet.
+  - id: replan
+    name: Re-plans
+    levels:
+      1: Repeats the failed plan.
+      2: Patches the plan.
+      3: Re-plans from the goal, not from the broken step.
+      4: As 3, and keeps the part of the old plan that still holds, explicitly.
+  - id: agency
+    name: Keeps agency
+    levels:
+      1: "The tool decides now."
+      2: Agency kept for big decisions only.
+      3: Uses tools for execution and keeps the decisions.
+      4: As 3, and can say which decision they almost gave away.

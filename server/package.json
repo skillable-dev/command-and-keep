@@ -1,0 +1,25 @@
+{
+  "name": "@skillable/command-and-keep-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Skillable runtime PoC: six MCP tools over a skill pack and a local evidence ledger",
+  "bin": { "skillable-mcp": "dist/index.js" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "validate": "tsx src/validate.ts ../packs/command-and-keep"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "yaml": "^2.9.0",
+    "zod": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.23.12",
+    "typescript": "^5.6.0"
+  }
+}

@@ -1,0 +1,23 @@
+capability: judgment
+dimensions:
+  - id: decides
+    name: Decides with what is known
+    levels:
+      1: Defers until more information, which will not arrive.
+      2: Decides, but cannot say what the decision rests on.
+      3: Decides, states the two or three things it rests on, and owns it.
+      4: As 3, and names the cost of deciding later.
+  - id: reversal
+    name: Knows what would change their mind
+    levels:
+      1: Nothing would.
+      2: '"New information" in general.'
+      3: Names the specific evidence that would reverse the decision.
+      4: As 3, and sets when they will look for it.
+  - id: ownership
+    name: Ownership
+    levels:
+      1: "The model recommended it."
+      2: Uses the model's view as the main reason.
+      3: Uses the model as input, and can say what they would have done had it said the opposite.
+      4: As 3, and records the decision so it can be judged later.

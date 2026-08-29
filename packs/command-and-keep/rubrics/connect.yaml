@@ -1,0 +1,23 @@
+capability: connect
+dimensions:
+  - id: capability-delta
+    name: What changed
+    levels:
+      1: Cannot say what the agent can do now that it could not before.
+      2: Vague ("it knows about my calendar").
+      3: Names the specific actions now possible and demonstrates one.
+      4: As 3, and names the action that is now possible but should not be taken.
+  - id: forbidden
+    name: Forbidden actions
+    levels:
+      1: None considered.
+      2: Mentioned after the fact.
+      3: At least one forbidden action named before connecting, with how it is prevented (scope, permission, confirmation).
+      4: As 3, and a plan for detecting if it happens anyway.
+  - id: least-authority
+    name: Least authority
+    levels:
+      1: Full access granted because it was easiest.
+      2: Some scoping, not reasoned.
+      3: Access scoped to the task, with a stated reason.
+      4: As 3, and time-limited or revocable by design.

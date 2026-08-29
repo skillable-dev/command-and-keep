@@ -1,0 +1,23 @@
+capability: brief
+dimensions:
+  - id: outcome
+    name: Outcome clarity
+    levels:
+      1: States an activity ("look into X"), no outcome.
+      2: States an outcome, but a reader would still have to guess what form it takes.
+      3: States the outcome, its form, its audience and the deadline in a way a stranger could act on.
+      4: As 3, and names what is explicitly out of scope and why.
+  - id: acceptance
+    name: Acceptance test
+    levels:
+      1: No way to tell if the result is right.
+      2: '"Check that it''s good" or similar; depends on the briefer''s judgement.'
+      3: One or more concrete checks a third party could run without asking the briefer.
+      4: Checks include a failure case the agent is likely to produce, and how to detect it.
+  - id: context
+    name: Transferred context
+    levels:
+      1: Assumes everything in the briefer's head.
+      2: Some context, but the crucial "what good looks like here" is missing.
+      3: The three things the agent could not know are stated explicitly.
+      4: As 3, and the brief says what to do when the agent is unsure.

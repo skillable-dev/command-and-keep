@@ -1,0 +1,10 @@
+{
+  "max_prompts_per_day": 3,
+  "permitted_hours": "08:00-20:00",
+  "emergency_simulation": "prohibited",
+  "real_institution_impersonation": "prohibited",
+  "real_third_party_messages_without_consent": "prohibited",
+  "reality_check_required": true,
+  "pause_always_available": true,
+  "context_tiers_allowed": ["manual", "user_shared_artifact", "calendar_free_busy", "focus_state"]
+}

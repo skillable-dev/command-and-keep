@@ -1,0 +1,23 @@
+capability: notice
+dimensions:
+  - id: frame
+    name: Sees the frame
+    levels:
+      1: Evaluates the output only on its own terms.
+      2: Senses something is missing; cannot say what.
+      3: Names what question the output was not answering.
+      4: As 3, and identifies who would have asked it.
+  - id: omission
+    name: Finds the omission
+    levels:
+      1: None found.
+      2: Finds a minor omission.
+      3: Finds the omission that changes the decision.
+      4: As 3, before being prompted to look.
+  - id: says-so
+    name: Says so before deciding
+    levels:
+      1: Notices later.
+      2: Notices, decides anyway, mentions it after.
+      3: Raises it before the decision, in one sentence.
+      4: As 3, and proposes what to do about it.

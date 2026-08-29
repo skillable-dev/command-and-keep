@@ -1,0 +1,23 @@
+capability: equip
+dimensions:
+  - id: decisions
+    name: Encoded decisions
+    levels:
+      1: A description of the job in prose.
+      2: Steps listed, but the decisions inside them ("when X, do Y") are missing.
+      3: The decisions are explicit as conditions and actions, with a reason for each.
+      4: As 3, and includes what the skill must refuse or escalate.
+  - id: runs-alone
+    name: Runs without the author
+    levels:
+      1: Not tried.
+      2: Tried once; the author intervened mid-run.
+      3: Ran on at least one real case unaided; deviations were noted.
+      4: Ran on three real cases; deviations were fixed in the skill and re-run.
+  - id: repair-locus
+    name: Where fixes go
+    levels:
+      1: Output edited by hand each time.
+      2: Skill edited sometimes; output edited when in a hurry.
+      3: Every deviation became a change to the skill.
+      4: As 3, with a note on which deviation revealed a decision the author had not known they made.

@@ -1,0 +1,23 @@
+capability: lead
+dimensions:
+  - id: honesty
+    name: Honest about uncertainty
+    levels:
+      1: Projects a plan that does not exist.
+      2: Admits uncertainty in a way that stalls people.
+      3: Says what is known, what is not, and what happens next regardless.
+      4: As 3, and gives people a way to contribute to what is unknown.
+  - id: direction
+    name: Direction without a plan
+    levels:
+      1: No direction; waits for the plan.
+      2: Direction that is really a list of tasks.
+      3: A clear next step and a principle for choosing the ones after it.
+      4: As 3, and a date when the direction will be revisited.
+  - id: human-first
+    name: Keeps the human part
+    levels:
+      1: Sends the AI draft to the team as-is.
+      2: Edits the AI draft's tone.
+      3: Decides what must be said in person and says it themselves; uses AI for the rest.
+      4: As 3, and can explain why that part was the human part.

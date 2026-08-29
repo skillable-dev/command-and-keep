@@ -1,0 +1,23 @@
+capability: orchestrate
+dimensions:
+  - id: decomposition
+    name: Decomposition
+    levels:
+      1: One prompt does everything.
+      2: Steps listed, but outputs of steps are not inspectable.
+      3: Each step has a single inspectable output and a clear input from the previous step.
+      4: As 3, and steps that can run in parallel are identified.
+  - id: checkpoints
+    name: Checkpoint judgement
+    levels:
+      1: Everything trusted, or everything checked.
+      2: Checkpoints placed, no reason given.
+      3: Checkpoints placed where an error would be costly or hard to detect later, with the reason stated.
+      4: As 3, and the check itself is specified (what you look at, what fails it).
+  - id: trust-disagreement
+    name: Handling disagreement
+    levels:
+      1: Not considered.
+      2: Picks one agent's output arbitrarily.
+      3: States what evidence decides between conflicting outputs, and escalates if none.
+      4: As 3, and uses the disagreement to improve a step's instructions.

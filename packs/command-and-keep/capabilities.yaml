@@ -1,0 +1,61 @@
+# Twelve observable capabilities. "tell" is how a colleague would know you have it.
+- id: brief
+  half: command
+  name: Brief an agent
+  tell: Your delegation briefs contain an outcome, constraints and an acceptance test someone else could run.
+  review_prompt: Without looking anything up, write a three-line brief for a task you did today, with a done-criterion someone else could check.
+- id: equip
+  half: command
+  name: Equip an agent with a skill
+  tell: You can turn a procedure you own into a skill file an agent runs without you, and you fix deviations in the skill rather than in the output.
+  review_prompt: Name one procedure you do weekly. What are the three decisions inside it that a skill file would have to encode?
+- id: connect
+  half: command
+  name: Connect a tool
+  tell: You can give an agent the ability to act (not just talk) and state exactly what it can now do and what it must not.
+  review_prompt: For one tool you use, say what an agent connected to it could do, and one action you would forbid.
+- id: orchestrate
+  half: command
+  name: Orchestrate a workflow
+  tell: You decompose multi-step work into agent-sized steps with checkpoints, and you can say which steps you trust unchecked.
+  review_prompt: Take a task with at least four steps. Which two steps would you checkpoint and why those?
+- id: verify
+  half: command
+  name: Verify an output
+  tell: You find the unsupported claim, the missing provenance and the injected instruction before anyone else does.
+  review_prompt: What are the first three things you check in an AI-written document before trusting it?
+- id: constrain
+  half: command
+  name: Constrain and recover
+  tell: You set authority limits before an agent acts, you escalate on time, and you can recover cleanly from an agent's mistake.
+  review_prompt: An agent you delegated to sent something wrong. What is your first action, your second, and what do you change afterwards?
+- id: judgment
+  half: keep
+  name: Judgment under uncertainty
+  tell: You make and own a call with incomplete information, state what would change your mind, and don't outsource the decision.
+  review_prompt: Recall a recent decision you made without enough information. What did you decide, and what would have changed your mind?
+- id: lead
+  half: keep
+  name: Leading through ambiguity
+  tell: You can align people on a direction while the plan is still forming, without pretending to more certainty than you have.
+  review_prompt: How do you tell a team "we don't know yet" in a way that keeps them moving?
+- id: create
+  half: keep
+  name: Creativity with constraints
+  tell: You originate options the obvious prompt would not produce, and you can say what constraint made them possible.
+  review_prompt: Take any constraint you face this week. Name two options it creates rather than removes.
+- id: ethics
+  half: keep
+  name: Ethical reasoning
+  tell: You act when the efficient answer is the wrong one, and you can name who bears the cost of the efficient answer.
+  review_prompt: Describe a situation where the fast answer was the wrong one. Who would have paid for it?
+- id: notice
+  half: keep
+  name: Noticing
+  tell: You catch what a frame left out, including the agent's frame, and you say so before deciding.
+  review_prompt: In the last thing an AI produced for you, what did it not consider?
+- id: resilience
+  half: keep
+  name: Adaptive resilience
+  tell: When something breaks, you re-plan quickly, keep agency, and don't hand the next decision to the tool by default.
+  review_prompt: When a plan failed recently, what was the first thing you did, and was it a decision or a reaction?

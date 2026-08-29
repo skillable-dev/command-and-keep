@@ -1,0 +1,23 @@
+capability: create
+dimensions:
+  - id: originality
+    name: Beyond the obvious
+    levels:
+      1: The first workable option.
+      2: Variations on the first option.
+      3: At least one option that violates an assumption the obvious options share.
+      4: As 3, and the assumption is named.
+  - id: constraint-use
+    name: Uses the constraint
+    levels:
+      1: Constraint treated as a limitation to remove.
+      2: Constraint tolerated.
+      3: Can state what the constraint made possible in the chosen option.
+      4: As 3, and deliberately adds a constraint to find a further option.
+  - id: judgement-of-own
+    name: Judges own options
+    levels:
+      1: Cannot choose between options.
+      2: Chooses by preference.
+      3: Chooses with a stated criterion and can say what the rejected option was better at.
+      4: As 3, and the criterion came from the audience, not the author.
