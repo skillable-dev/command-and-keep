@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Skillable runtime PoC: six MCP tools over one skill pack and a local evidence ledger.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
