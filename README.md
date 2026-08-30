@@ -63,6 +63,16 @@ The ledger lives at `~/.skillable/command-and-keep/ledger.json`. Read it any tim
 
 Intensity: `guided` unlocks strictly one calendar day at a time; `adaptive`/`immersive` let the learner run one day ahead once today's missions are done.
 
+## Remote transport
+
+The same six operations are served from Skillable's hosted MCP server for signed-in learners, backed by a Supabase evidence ledger rather than a local file. The pack is compiled into that function as a generated module:
+
+```bash
+npm run embed -- ../../skillable/supabase/functions/_shared/packs
+```
+
+This pack folder stays the single source of truth; commit the regenerated artifact in the `skillable` repo whenever the pack changes.
+
 ## Develop
 
 ```bash

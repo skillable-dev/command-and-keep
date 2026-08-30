@@ -15,7 +15,8 @@
     "validate": "tsx src/validate.ts ../skills/command-and-keep",
     "bundle": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/skillable-mcp.js --banner:js=\"#!/usr/bin/env node\nimport { createRequire } from \\\"node:module\\\"; const require = createRequire(import.meta.url);\"",
     "bundle:cli": "esbuild src/cli.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/skillable-cli.js --banner:js=\"#!/usr/bin/env node\nimport { createRequire } from \\\"node:module\\\"; const require = createRequire(import.meta.url);\"",
-    "release": "npm run build && npm run bundle && npm run bundle:cli"
+    "release": "npm run build && npm run bundle && npm run bundle:cli",
+    "embed": "tsx src/embed.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
