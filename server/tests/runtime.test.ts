@@ -25,7 +25,7 @@ function fresh() {
   return { pack, rt, clock };
 }
 
-test("the real pack passes every publishing gate", () => {
+test("the real pack passes every automated structural publishing gate", () => {
   const pack = loadPack(PACK);
   assert.deepEqual(validatePack(pack), []);
   assert.equal(pack.capabilities.length, 12);

@@ -30,7 +30,7 @@ test("flagship v1 has one authentic and one unaided transfer mission per capabil
   }
 });
 
-test("publishing fails closed when a capability loses transfer coverage", () => {
+test("structural publishing fails closed when a capability loses transfer coverage", () => {
   const pack = freshPack();
   const transfer = Object.values(pack.missions).find(
     (mission) => mission.kind === "transfer" && mission.capabilities.includes("equip"),
@@ -40,7 +40,7 @@ test("publishing fails closed when a capability loses transfer coverage", () => 
   assert.ok(validatePack(pack).includes("capability 'equip' has no transfer mission"));
 });
 
-test("publishing rejects malformed transfer relationships", () => {
+test("structural publishing rejects malformed transfer relationships", () => {
   const pack = freshPack();
   const transfer = pack.missions["t-brief-under-pressure"];
   transfer.transfer_of = "d0-diagnostic";
@@ -55,7 +55,7 @@ test("publishing rejects malformed transfer relationships", () => {
   assert.ok(problems.includes("transfer 't-brief-under-pressure' must explain its context_shift"));
 });
 
-test("publishing rejects transfer/source capability mismatches and unsafe contexts", () => {
+test("structural publishing rejects transfer/source capability mismatches and unsafe contexts", () => {
   const pack = freshPack();
   const transfer = pack.missions["t-brief-under-pressure"];
   transfer.transfer_of = "d2-equip-your-agent";

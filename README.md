@@ -94,6 +94,7 @@ The runtime (`src/runtime.ts`) is pure over `(pack, ledger, clock)`; the MCP lay
 - The same pack artifact in the local and hosted runtimes.
 
 These are local, deterministic product checks. They do not show that a particular model follows the pack well or that people learn from it.
+They also do not substitute for expert-attributed, observed worked examples at every rubric level; commissioning and calibrating those examples remains a human publication gate.
 
 ## What flagship v1 deliberately leaves out
 

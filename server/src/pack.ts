@@ -189,7 +189,7 @@ export function loadPack(root: string): Pack {
   return pack;
 }
 
-/** Publishing gates. Returns a list of problems; empty means the pack passes. */
+/** Automated structural publishing gates. Returns a list of problems; empty means the pack structure passes. */
 export function validatePack(pack: Pack): string[] {
   const problems: string[] = [];
   const capIds = new Set(pack.capabilities.map((c) => c.id));
