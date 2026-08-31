@@ -7403,6 +7403,7 @@ function loadMissionsFrom(dir) {
       unaided_required: Boolean(d.unaided_required ?? false),
       transfer_of: d.transfer_of,
       transfer_distance: Number(d.transfer_distance ?? 0),
+      context_shift: d.context_shift,
       evidence: d.evidence ?? [],
       contexts: d.contexts ?? ["manual"],
       fallback_scenario: d.fallback_scenario,

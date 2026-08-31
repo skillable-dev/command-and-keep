@@ -1,4 +1,4 @@
-// Skillable runtime PoC: six MCP tools over one skill pack and a local evidence ledger.
+// Skillable flagship runtime: six MCP tools over one skill pack and a local evidence ledger.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -21,7 +21,7 @@ if (problems.length) {
 }
 const runtime = new Runtime(pack, new Ledger(ledgerPath));
 
-const server = new McpServer({ name: "skillable", version: "0.1.0" });
+const server = new McpServer({ name: "skillable", version: "1.0.0" });
 
 function ok(payload: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }] };

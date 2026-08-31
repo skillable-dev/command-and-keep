@@ -1,4 +1,4 @@
-// The evidence ledger. A single JSON file for the PoC; the shape is what matters.
+// The evidence ledger. The local transport uses one JSON file; the hosted transport persists the same shape remotely.
 import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync } from "node:fs";
 import { dirname } from "node:path";
 import { randomUUID } from "node:crypto";

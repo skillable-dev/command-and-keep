@@ -1,9 +1,9 @@
 {
   "name": "@skillable/command-and-keep-server",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Skillable runtime PoC: six MCP tools over a skill pack and a local evidence ledger",
+  "description": "Skillable flagship runtime: six MCP tools over the Command & Keep skill pack and an evidence ledger",
   "bin": {
     "skillable-mcp": "dist/index.js"
   },

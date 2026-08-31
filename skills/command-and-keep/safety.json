@@ -6,5 +6,5 @@
   "real_third_party_messages_without_consent": "prohibited",
   "reality_check_required": true,
   "pause_always_available": true,
-  "context_tiers_allowed": ["manual", "user_shared_artifact", "calendar_free_busy", "focus_state"]
+  "context_tiers_allowed": ["manual", "scenario", "user_shared_artifact", "calendar_free_busy", "focus_state"]
 }

@@ -1,6 +1,6 @@
-# Command & Keep — Skillable PoC
+# Command & Keep — Skillable flagship pack
 
-The first proof of concept for agent-native Skillable: **one skill pack, six MCP tools, an evidence ledger, zero UI.**
+The first flagship experience for agent-native Skillable: **one skill pack, six MCP tools, an evidence ledger, zero UI.**
 The learner runs a 14-day campaign inside their own Claude (or any MCP + Agent Skills client). Their assistant is the coach; this server is the runtime and the ledger.
 
 ```
@@ -10,7 +10,7 @@ skills/command-and-keep/     the course, as a folder (Agent Skills spec + Skilla
   capabilities.yaml         12 observable capabilities with a "tell" and a review prompt
   rubrics/<capability>.yaml behaviour-anchored, 4 levels, 3 dimensions each
   missions/                 d0 diagnostic, d1–d12 one per capability, d13 The Incident, d14 retrospective
-  transfer/                 harder variants, always unaided
+  transfer/                 one harder unaided variant for every capability (27 missions total)
   misconceptions.yaml       20 ways people get it wrong, the tell, the repair
   evidence-rules.json       what counts, what must be unaided, human sampling
   safety.json               interrupt budget, hours, prohibitions
@@ -72,6 +72,7 @@ npm run embed -- ../../skillable/supabase/functions/_shared/packs
 ```
 
 This pack folder stays the single source of truth; commit the regenerated artifact in the `skillable` repo whenever the pack changes.
+The generated module records a SHA-256 digest of the canonical embedded pack so the hosted artifact can be matched exactly to this source content.
 
 ## Develop
 
@@ -84,13 +85,23 @@ npm run build
 
 The runtime (`src/runtime.ts`) is pure over `(pack, ledger, clock)`; the MCP layer (`src/index.ts`) is thin.
 
-## What this PoC deliberately leaves out
+## What flagship v1 establishes
 
-- Remote/OAuth MCP and a Supabase-backed ledger (the main repo has both; port once the loop feels right).
+- Twelve observable capabilities split between Command and Keep.
+- One authentic mission and one explicit, unaided context shift for every capability.
+- Fail-closed structural gates for transfer relationships, positive transfer distance, safety-allowed contexts, rubrics and misconception repairs.
+- A coach contract with adversarial regression coverage for answer-giving, instruction override, assistance/score laundering and trust claims.
+- The same pack artifact in the local and hosted runtimes.
+
+These are local, deterministic product checks. They do not show that a particular model follows the pack well or that people learn from it.
+
+## What flagship v1 deliberately leaves out
+
 - The App Intents transport (the `FieldModeCore` Swift package mirrors these six verbs later).
 - Agent-initiated nudges. The lens is pulled; the OS transport will push, within `safety.json`'s budget.
 - A human-review UI. Attempts flagged `human_review_required` sit in the ledger until someone reads them.
 - Real code execution or audio grading. Everything is AI-evaluated against the rubric and says so.
+- Live-model red-team qualification, third-party Agent Skills portability, real-learner transfer and efficacy evidence. Those require the ten-learner pilot.
 
 ## What to measure with the first ten learners
 

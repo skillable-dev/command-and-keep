@@ -42887,6 +42887,7 @@ function loadMissionsFrom(dir) {
       unaided_required: Boolean(d.unaided_required ?? false),
       transfer_of: d.transfer_of,
       transfer_distance: Number(d.transfer_distance ?? 0),
+      context_shift: d.context_shift,
       evidence: d.evidence ?? [],
       contexts: d.contexts ?? ["manual"],
       fallback_scenario: d.fallback_scenario,
@@ -42959,16 +42960,35 @@ function validatePack(pack2) {
     if (!c.tell) problems2.push(`capability '${c.id}' has no tell`);
     const missions = Object.values(pack2.missions).filter((m) => m.capabilities.includes(c.id));
     if (!missions.some((m) => m.kind === "mission")) problems2.push(`capability '${c.id}' has no authentic mission`);
+    if (!missions.some((m) => m.kind === "transfer")) problems2.push(`capability '${c.id}' has no transfer mission`);
     if (!pack2.misconceptions.some((mc) => mc.capability === c.id)) problems2.push(`capability '${c.id}' has no misconception`);
   }
   for (const m of Object.values(pack2.missions)) {
     for (const cid of m.capabilities) {
       if (!capIds.has(cid)) problems2.push(`mission '${m.id}' references unknown capability '${cid}'`);
     }
-    if (m.transfer_of && !pack2.missions[m.transfer_of]) {
-      problems2.push(`transfer '${m.id}' references unknown mission '${m.transfer_of}'`);
+    if (m.kind === "transfer") {
+      if (!m.transfer_of) {
+        problems2.push(`transfer '${m.id}' has no transfer_of mission`);
+      } else {
+        const source = pack2.missions[m.transfer_of];
+        if (!source) {
+          problems2.push(`transfer '${m.id}' references unknown mission '${m.transfer_of}'`);
+        } else {
+          if (source.kind !== "mission") problems2.push(`transfer '${m.id}' must reference an authentic mission, not '${source.kind}'`);
+          for (const cid of m.capabilities) {
+            if (!source.capabilities.includes(cid)) {
+              problems2.push(`transfer '${m.id}' capability '${cid}' is not covered by source mission '${source.id}'`);
+            }
+          }
+        }
+      }
+      if (!m.unaided_required) problems2.push(`transfer '${m.id}' must be unaided_required`);
+      if (m.transfer_distance < 1) problems2.push(`transfer '${m.id}' must have a positive transfer_distance`);
+      if (!m.context_shift?.trim()) problems2.push(`transfer '${m.id}' must explain its context_shift`);
+    } else if (m.transfer_of) {
+      problems2.push(`mission '${m.id}' declares transfer_of but is not a transfer`);
     }
-    if (m.kind === "transfer" && !m.unaided_required) problems2.push(`transfer '${m.id}' must be unaided_required`);
     if (m.day < 0 || m.day > pack2.campaign.duration_days) problems2.push(`mission '${m.id}' day ${m.day} outside campaign`);
     if (!m.body.trim()) problems2.push(`mission '${m.id}' has an empty body`);
   }
@@ -42985,6 +43005,13 @@ function validatePack(pack2) {
   const s = pack2.safety;
   for (const key of ["max_prompts_per_day", "permitted_hours", "reality_check_required", "pause_always_available"]) {
     if (s[key] === void 0) problems2.push(`safety.json missing '${key}'`);
+  }
+  const allowedContexts = new Set(Array.isArray(s.context_tiers_allowed) ? s.context_tiers_allowed.map(String) : []);
+  if (allowedContexts.size === 0) problems2.push("safety.json: context_tiers_allowed must not be empty");
+  for (const m of Object.values(pack2.missions)) {
+    for (const context of m.contexts) {
+      if (!allowedContexts.has(context)) problems2.push(`mission '${m.id}' uses context '${context}' outside the safety allowlist`);
+    }
   }
   if (!pack2.evidenceRules.credential?.capstone_required) problems2.push("evidence-rules.json: credential.capstone_required missing");
   return problems2;
@@ -43514,7 +43541,7 @@ if (problems.length) {
   process.exit(1);
 }
 var runtime = new Runtime(pack, new Ledger(ledgerPath));
-var server = new McpServer({ name: "skillable", version: "0.1.0" });
+var server = new McpServer({ name: "skillable", version: "1.0.0" });
 function ok(payload) {
   return { content: [{ type: "text", text: JSON.stringify(payload, null, 2) }] };
 }

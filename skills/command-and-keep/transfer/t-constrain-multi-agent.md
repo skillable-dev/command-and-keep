@@ -6,6 +6,7 @@ day: 11
 capability: constrain
 transfer_of: d6-set-the-limits
 transfer_distance: 2
+context_shift: Moves authority design from one agent to a three-agent chain where instructions and permissions can propagate.
 template: intervene
 minutes: 10
 unaided_required: true

@@ -2,7 +2,7 @@
   "name": "command-and-keep",
   "displayName": "Command & Keep",
   "description": "A 14-day coached campaign, run by your own agent, that teaches you to command AI agents and keep what is yours. Skill pack + Skillable runtime (six MCP tools over a local evidence ledger).",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": { "name": "Skillable", "url": "https://skillable.dev" },
   "homepage": "https://skillable.dev",
   "repository": "https://github.com/skillable-dev/command-and-keep",

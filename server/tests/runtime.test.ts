@@ -29,7 +29,8 @@ test("the real pack passes every publishing gate", () => {
   const pack = loadPack(PACK);
   assert.deepEqual(validatePack(pack), []);
   assert.equal(pack.capabilities.length, 12);
-  assert.ok(Object.keys(pack.missions).length >= 18);
+  assert.equal(Object.keys(pack.missions).length, 27);
+  assert.equal(Object.values(pack.missions).filter((mission) => mission.kind === "transfer").length, 12);
 });
 
 test("before start, todays_lens returns the contract; with intensity it starts on day 0", () => {
