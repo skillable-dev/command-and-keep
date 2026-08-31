@@ -54,6 +54,10 @@ test("voice-only coaching is a warm one-question-at-a-time handrail", () => {
   assert.match(skill, /Confirm before recording[\s\S]*Never turn a stray utterance into evidence/);
   assert.match(skill, /Recover without blame[\s\S]*Progress is not punishment/);
   assert.match(skill, /Prefer two plain sentences and one question/);
+  assert.match(skill, /Make progress unmistakable[\s\S]*campaign position, recorded-attempt count, capability-evidence count and single next step/);
+  assert.match(skill, /day is journey position rather than proof/);
+  assert.match(skill, /Never replace this with a streak, XP, time-spent score or flattering percentage/);
+  assert.match(skill, /say the returned `progress\.summary` before moving to feedback/);
 });
 
 test("runtime constraints and ledger integrity preserve the refusal contract", () => {

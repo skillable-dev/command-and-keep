@@ -101,6 +101,34 @@ export class Runtime {
     return this.ledger.data.reviews.filter((r) => !r.done_attempt_id && r.due_on <= today);
   }
 
+  private progressSnapshot(nextStep: string) {
+    const day = this.campaignDay();
+    const submitted = this.ledger.data.attempts.filter((a) => a.submitted_at);
+    const capsWithEvidence = new Set(submitted.flatMap((a) => a.capabilities));
+    const ofDays = this.pack.campaign.duration_days;
+    const ofCapabilities = this.pack.capabilities.length;
+    const position = day === null
+      ? `Not started — ${ofDays} days when you choose to begin`
+      : day === 0
+      ? `Diagnostic — before Day 1 of ${ofDays}`
+      : `Day ${day} of ${ofDays}`;
+    const attemptWord = submitted.length === 1 ? "attempt" : "attempts";
+    const capabilityVerb = capsWithEvidence.size === 1 ? "has" : "have";
+
+    return {
+      campaign_position: { day, of_days: ofDays, label: position },
+      attempts: submitted.length,
+      recorded_attempts: submitted.length,
+      capabilities_with_evidence: capsWithEvidence.size,
+      of_capabilities: ofCapabilities,
+      next_step: nextStep,
+      summary:
+        `${position}. ${submitted.length} recorded ${attemptWord}; ${capsWithEvidence.size} of ${ofCapabilities} capabilities ${capabilityVerb} evidence. Next: ${nextStep}`,
+      proof_note:
+        "Campaign day is journey position, not proof. Evidence means work is recorded; it does not by itself mean passed, verified, credentialed, or human-reviewed.",
+    };
+  }
+
   // ---------------------------------------------------------------- 1. todays_lens
   todaysLens(opts: { intensity?: string; learner_name?: string } = {}) {
     const { campaign: cfg, contract } = { campaign: this.pack.campaign, contract: this.pack.campaign.contract };
@@ -114,6 +142,7 @@ export class Runtime {
           contract,
           intensities: cfg.intensities,
           default_intensity: cfg.default_intensity,
+          progress: this.progressSnapshot("Choose an intensity, or leave without starting."),
           instructions:
             "Read the contract to the learner in your own words. Ask which intensity they want. Then call todays_lens again with `intensity`, and start the diagnostic with start_mission('" +
             cfg.diagnostic +
@@ -129,14 +158,24 @@ export class Runtime {
 
     const c = this.ledger.data.campaign;
     if (c.paused) {
-      return { state: "paused" as const, instructions: "The campaign is paused. Nothing is recorded until the learner asks to resume." };
+      return {
+        state: "paused" as const,
+        day: this.campaignDay()!,
+        of_days: cfg.duration_days,
+        intensity: c.intensity,
+        progress: this.progressSnapshot("Resume when you choose; nothing advances while paused."),
+        instructions: "The campaign is paused. Nothing is recorded until the learner asks to resume.",
+      };
     }
     const day = this.campaignDay()!;
     const available = this.availableMissions();
     const due = this.dueReviewItems();
-    const submitted = this.ledger.data.attempts.filter((a) => a.submitted_at);
-    const capsWithEvidence = new Set(submitted.flatMap((a) => a.capabilities));
     const safety = this.pack.safety as { max_prompts_per_day?: number; permitted_hours?: string };
+    const nextStep = due.length > 0
+      ? `Complete ${due.length} due review${due.length === 1 ? "" : "s"} first.`
+      : available.length > 0
+      ? `Choose one eligible mission: ${available[0].title}.`
+      : "Nothing new is unlocked; wait or re-attempt one capability in a new context.";
 
     return {
       state: "active" as const,
@@ -156,11 +195,7 @@ export class Runtime {
       })),
       in_progress: this.ledger.inProgress().map((a) => ({ attempt_id: a.id, mission_id: a.mission_id, started_at: a.started_at })),
       due_reviews: due.length,
-      progress: {
-        attempts: submitted.length,
-        capabilities_with_evidence: capsWithEvidence.size,
-        of_capabilities: this.pack.capabilities.length,
-      },
+      progress: this.progressSnapshot(nextStep),
       budget: { max_prompts_per_day: safety.max_prompts_per_day, permitted_hours: safety.permitted_hours },
       instructions: [
         due.length > 0 ? `Run the ${due.length} due review(s) first via due_reviews.` : null,
@@ -334,6 +369,7 @@ export class Runtime {
       unaided,
       human_review_required: a.human_review_required,
       integrity_notes: integrity,
+      progress: this.progressSnapshot("Get feedback for this recorded attempt."),
       next: "Call get_feedback and deliver it in the required order.",
     };
   }
