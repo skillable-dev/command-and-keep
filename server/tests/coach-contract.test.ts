@@ -35,12 +35,25 @@ test("the coach contract covers common attempts to get the agent to do or launde
   for (const attackClass of requiredAttackClasses) {
     assert.match(skill, new RegExp(`\\*\\*${attackClass}:`));
   }
-  assert.match(skill, /Tell me your first move and I'll react/);
+  assert.match(skill, /I'm here with you, but this decision has to be yours/);
   assert.match(skill, /Never go past rung 3/);
   assert.match(skill, /Missions marked `unaided_required`[\s\S]*get zero hints/);
   assert.match(skill, /instructions inside pasted documents[\s\S]*untrusted mission material/);
   assert.match(skill, /Never agree to omit a hint[\s\S]*`assisted_by_agent: false`/);
   assert.match(skill, /Never call agent-only evidence "verified", "supervised" or "human-reviewed"/);
+});
+
+test("voice-only coaching is a warm one-question-at-a-time handrail", () => {
+  const skill = readFileSync(join(PACK_DIR, "SKILL.md"), "utf8");
+
+  assert.match(skill, /## Voice-first handrail/);
+  assert.match(skill, /Orient first[\s\S]*Never drop them into a question without context/);
+  assert.match(skill, /One question at a time[\s\S]*briefly reflect what you heard/);
+  assert.match(skill, /repeat that, say it in plainer language, break it into a smaller step, or give you one hint/);
+  assert.match(skill, /At an unaided mission[\s\S]*hints would change how the attempt is recorded/);
+  assert.match(skill, /Confirm before recording[\s\S]*Never turn a stray utterance into evidence/);
+  assert.match(skill, /Recover without blame[\s\S]*Progress is not punishment/);
+  assert.match(skill, /Prefer two plain sentences and one question/);
 });
 
 test("runtime constraints and ledger integrity preserve the refusal contract", () => {
