@@ -1,6 +1,6 @@
 id: command-and-keep
 title: Command & Keep
-version: 0.1.0
+version: 1.0.0
 duration_days: 14
 intensities: [guided, adaptive, immersive]
 default_intensity: adaptive

@@ -6,6 +6,7 @@ day: 9
 capability: verify
 transfer_of: d5-audit-the-output
 transfer_distance: 1
+context_shift: Moves the audit from someone else's output to an output the learner requested and already wants to trust.
 template: inspect
 minutes: 10
 unaided_required: true

@@ -39,6 +39,7 @@ export interface Mission {
   unaided_required: boolean;
   transfer_of?: string;
   transfer_distance: number;
+  context_shift?: string;
   evidence: string[];
   contexts: string[];
   fallback_scenario?: string;
@@ -134,6 +135,7 @@ function loadMissionsFrom(dir: string): Mission[] {
         unaided_required: Boolean(d.unaided_required ?? false),
         transfer_of: d.transfer_of as string | undefined,
         transfer_distance: Number(d.transfer_distance ?? 0),
+        context_shift: d.context_shift as string | undefined,
         evidence: (d.evidence as string[]) ?? [],
         contexts: (d.contexts as string[]) ?? ["manual"],
         fallback_scenario: d.fallback_scenario as string | undefined,
@@ -187,7 +189,7 @@ export function loadPack(root: string): Pack {
   return pack;
 }
 
-/** Publishing gates. Returns a list of problems; empty means the pack passes. */
+/** Automated structural publishing gates. Returns a list of problems; empty means the pack structure passes. */
 export function validatePack(pack: Pack): string[] {
   const problems: string[] = [];
   const capIds = new Set(pack.capabilities.map((c) => c.id));
@@ -214,6 +216,7 @@ export function validatePack(pack: Pack): string[] {
     if (!c.tell) problems.push(`capability '${c.id}' has no tell`);
     const missions = Object.values(pack.missions).filter((m) => m.capabilities.includes(c.id));
     if (!missions.some((m) => m.kind === "mission")) problems.push(`capability '${c.id}' has no authentic mission`);
+    if (!missions.some((m) => m.kind === "transfer")) problems.push(`capability '${c.id}' has no transfer mission`);
     if (!pack.misconceptions.some((mc) => mc.capability === c.id)) problems.push(`capability '${c.id}' has no misconception`);
   }
 
@@ -221,10 +224,28 @@ export function validatePack(pack: Pack): string[] {
     for (const cid of m.capabilities) {
       if (!capIds.has(cid)) problems.push(`mission '${m.id}' references unknown capability '${cid}'`);
     }
-    if (m.transfer_of && !pack.missions[m.transfer_of]) {
-      problems.push(`transfer '${m.id}' references unknown mission '${m.transfer_of}'`);
+    if (m.kind === "transfer") {
+      if (!m.transfer_of) {
+        problems.push(`transfer '${m.id}' has no transfer_of mission`);
+      } else {
+        const source = pack.missions[m.transfer_of];
+        if (!source) {
+          problems.push(`transfer '${m.id}' references unknown mission '${m.transfer_of}'`);
+        } else {
+          if (source.kind !== "mission") problems.push(`transfer '${m.id}' must reference an authentic mission, not '${source.kind}'`);
+          for (const cid of m.capabilities) {
+            if (!source.capabilities.includes(cid)) {
+              problems.push(`transfer '${m.id}' capability '${cid}' is not covered by source mission '${source.id}'`);
+            }
+          }
+        }
+      }
+      if (!m.unaided_required) problems.push(`transfer '${m.id}' must be unaided_required`);
+      if (m.transfer_distance < 1) problems.push(`transfer '${m.id}' must have a positive transfer_distance`);
+      if (!m.context_shift?.trim()) problems.push(`transfer '${m.id}' must explain its context_shift`);
+    } else if (m.transfer_of) {
+      problems.push(`mission '${m.id}' declares transfer_of but is not a transfer`);
     }
-    if (m.kind === "transfer" && !m.unaided_required) problems.push(`transfer '${m.id}' must be unaided_required`);
     if (m.day < 0 || m.day > pack.campaign.duration_days) problems.push(`mission '${m.id}' day ${m.day} outside campaign`);
     if (!m.body.trim()) problems.push(`mission '${m.id}' has an empty body`);
   }
@@ -244,6 +265,13 @@ export function validatePack(pack: Pack): string[] {
   const s = pack.safety as Record<string, unknown>;
   for (const key of ["max_prompts_per_day", "permitted_hours", "reality_check_required", "pause_always_available"]) {
     if (s[key] === undefined) problems.push(`safety.json missing '${key}'`);
+  }
+  const allowedContexts = new Set(Array.isArray(s.context_tiers_allowed) ? s.context_tiers_allowed.map(String) : []);
+  if (allowedContexts.size === 0) problems.push("safety.json: context_tiers_allowed must not be empty");
+  for (const m of Object.values(pack.missions)) {
+    for (const context of m.contexts) {
+      if (!allowedContexts.has(context)) problems.push(`mission '${m.id}' uses context '${context}' outside the safety allowlist`);
+    }
   }
   if (!pack.evidenceRules.credential?.capstone_required) problems.push("evidence-rules.json: credential.capstone_required missing");
 

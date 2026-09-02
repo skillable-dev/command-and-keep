@@ -25,11 +25,12 @@ function fresh() {
   return { pack, rt, clock };
 }
 
-test("the real pack passes every publishing gate", () => {
+test("the real pack passes every automated structural publishing gate", () => {
   const pack = loadPack(PACK);
   assert.deepEqual(validatePack(pack), []);
   assert.equal(pack.capabilities.length, 12);
-  assert.ok(Object.keys(pack.missions).length >= 18);
+  assert.equal(Object.keys(pack.missions).length, 27);
+  assert.equal(Object.values(pack.missions).filter((mission) => mission.kind === "transfer").length, 12);
 });
 
 test("before start, todays_lens returns the contract; with intensity it starts on day 0", () => {
@@ -37,10 +38,14 @@ test("before start, todays_lens returns the contract; with intensity it starts o
   const first = rt.todaysLens();
   assert.equal(first.state, "not_started");
   assert.match((first as { contract: string }).contract, /pause/);
+  assert.match(first.progress.summary, /Not started.*0 recorded attempts.*0 of 12 capabilities have evidence/);
   const started = rt.todaysLens({ intensity: "adaptive" });
   assert.equal(started.state, "active");
   const s = started as Extract<ReturnType<Runtime["todaysLens"]>, { state: "active" }>;
   assert.equal(s.day, 0);
+  assert.equal(s.progress.campaign_position.label, "Diagnostic — before Day 1 of 14");
+  assert.match(s.progress.proof_note, /journey position, not proof/);
+  assert.match(s.progress.next_step, /Choose one eligible mission/);
   assert.deepEqual(s.available_missions.map((m) => m.id), ["d0-diagnostic"]);
   assert.throws(() => rt.startMission("d1-brief-a-real-task"), /unlocks on day 1/);
 });
@@ -69,6 +74,10 @@ test("diagnostic → submit → feedback, reviews scheduled, unaided recorded", 
     misconceptions: ["brief.vague-done"],
   });
   assert.equal(sub.unaided, true);
+  assert.equal(sub.progress.recorded_attempts, 1);
+  assert.equal(sub.progress.capabilities_with_evidence, 3);
+  assert.match(sub.progress.summary, /1 recorded attempt; 3 of 12 capabilities have evidence/);
+  assert.equal(sub.progress.next_step, "Get feedback for this recorded attempt.");
   assert.equal(rt.ledger.data.reviews.filter((r) => r.capability_id === "brief").length, 3);
   assert.deepEqual(
     rt.ledger.data.reviews.filter((r) => r.capability_id === "brief").map((r) => r.due_on),
@@ -85,6 +94,8 @@ test("diagnostic → submit → feedback, reviews scheduled, unaided recorded", 
   const lens = rt.todaysLens() as Extract<ReturnType<Runtime["todaysLens"]>, { state: "active" }>;
   assert.equal(lens.day, 1);
   assert.equal(lens.due_reviews, 3);
+  assert.equal(lens.progress.campaign_position.label, "Day 1 of 14");
+  assert.match(lens.progress.summary, /Next: Complete 3 due reviews first/);
   assert.ok(lens.available_missions.some((m) => m.id === "d1-brief-a-real-task"));
 
   const due = rt.dueReviews();
@@ -108,6 +119,21 @@ test("hints on an unaided mission are recorded and the attempt does not count as
   assert.equal(brief.attempts, 1);
   assert.equal(brief.unaided_attempts, 0);
   assert.ok(status.missing.some((m) => /capstone/.test(m)));
+});
+
+test("paused progress remains explicit without implying progress was lost", () => {
+  const { rt, pack, clock } = fresh();
+  const diagnostic = rt.startMission("d0-diagnostic");
+  rt.submitEvidence({ attempt_id: diagnostic.attempt_id, evidence_type: "artifact", evidence: "x", hints_used: 0, assisted_by_agent: false, scores: fullScores(pack, diagnostic.mission.capabilities) });
+  clock.advance(2);
+  rt.pause(true);
+
+  const lens = rt.todaysLens() as Extract<ReturnType<Runtime["todaysLens"]>, { state: "paused" }>;
+  assert.equal(lens.day, 2);
+  assert.equal(lens.progress.recorded_attempts, 1);
+  assert.equal(lens.progress.capabilities_with_evidence, 3);
+  assert.match(lens.progress.summary, /Day 2 of 14.*Resume when you choose; nothing advances while paused/);
+  assert.match(lens.progress.proof_note, /does not by itself mean passed/);
 });
 
 test("adaptive learners unlock one day ahead once today is done; guided learners do not", () => {

@@ -6,6 +6,7 @@ day: 4
 capability: brief
 transfer_of: d1-brief-a-real-task
 transfer_distance: 2
+context_shift: Moves the written, planned brief into a spoken or single-message brief under a ninety-second deadline.
 template: decide
 minutes: 5
 unaided_required: true

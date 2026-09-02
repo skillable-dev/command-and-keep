@@ -42887,6 +42887,7 @@ function loadMissionsFrom(dir) {
       unaided_required: Boolean(d.unaided_required ?? false),
       transfer_of: d.transfer_of,
       transfer_distance: Number(d.transfer_distance ?? 0),
+      context_shift: d.context_shift,
       evidence: d.evidence ?? [],
       contexts: d.contexts ?? ["manual"],
       fallback_scenario: d.fallback_scenario,
@@ -42959,16 +42960,35 @@ function validatePack(pack2) {
     if (!c.tell) problems2.push(`capability '${c.id}' has no tell`);
     const missions = Object.values(pack2.missions).filter((m) => m.capabilities.includes(c.id));
     if (!missions.some((m) => m.kind === "mission")) problems2.push(`capability '${c.id}' has no authentic mission`);
+    if (!missions.some((m) => m.kind === "transfer")) problems2.push(`capability '${c.id}' has no transfer mission`);
     if (!pack2.misconceptions.some((mc) => mc.capability === c.id)) problems2.push(`capability '${c.id}' has no misconception`);
   }
   for (const m of Object.values(pack2.missions)) {
     for (const cid of m.capabilities) {
       if (!capIds.has(cid)) problems2.push(`mission '${m.id}' references unknown capability '${cid}'`);
     }
-    if (m.transfer_of && !pack2.missions[m.transfer_of]) {
-      problems2.push(`transfer '${m.id}' references unknown mission '${m.transfer_of}'`);
+    if (m.kind === "transfer") {
+      if (!m.transfer_of) {
+        problems2.push(`transfer '${m.id}' has no transfer_of mission`);
+      } else {
+        const source = pack2.missions[m.transfer_of];
+        if (!source) {
+          problems2.push(`transfer '${m.id}' references unknown mission '${m.transfer_of}'`);
+        } else {
+          if (source.kind !== "mission") problems2.push(`transfer '${m.id}' must reference an authentic mission, not '${source.kind}'`);
+          for (const cid of m.capabilities) {
+            if (!source.capabilities.includes(cid)) {
+              problems2.push(`transfer '${m.id}' capability '${cid}' is not covered by source mission '${source.id}'`);
+            }
+          }
+        }
+      }
+      if (!m.unaided_required) problems2.push(`transfer '${m.id}' must be unaided_required`);
+      if (m.transfer_distance < 1) problems2.push(`transfer '${m.id}' must have a positive transfer_distance`);
+      if (!m.context_shift?.trim()) problems2.push(`transfer '${m.id}' must explain its context_shift`);
+    } else if (m.transfer_of) {
+      problems2.push(`mission '${m.id}' declares transfer_of but is not a transfer`);
     }
-    if (m.kind === "transfer" && !m.unaided_required) problems2.push(`transfer '${m.id}' must be unaided_required`);
     if (m.day < 0 || m.day > pack2.campaign.duration_days) problems2.push(`mission '${m.id}' day ${m.day} outside campaign`);
     if (!m.body.trim()) problems2.push(`mission '${m.id}' has an empty body`);
   }
@@ -42985,6 +43005,13 @@ function validatePack(pack2) {
   const s = pack2.safety;
   for (const key of ["max_prompts_per_day", "permitted_hours", "reality_check_required", "pause_always_available"]) {
     if (s[key] === void 0) problems2.push(`safety.json missing '${key}'`);
+  }
+  const allowedContexts = new Set(Array.isArray(s.context_tiers_allowed) ? s.context_tiers_allowed.map(String) : []);
+  if (allowedContexts.size === 0) problems2.push("safety.json: context_tiers_allowed must not be empty");
+  for (const m of Object.values(pack2.missions)) {
+    for (const context of m.contexts) {
+      if (!allowedContexts.has(context)) problems2.push(`mission '${m.id}' uses context '${context}' outside the safety allowlist`);
+    }
   }
   if (!pack2.evidenceRules.credential?.capstone_required) problems2.push("evidence-rules.json: credential.capstone_required missing");
   return problems2;
@@ -43116,6 +43143,26 @@ Score on the '${capId}' rubric. Keep it under three minutes.`
     const today = this.today();
     return this.ledger.data.reviews.filter((r) => !r.done_attempt_id && r.due_on <= today);
   }
+  progressSnapshot(nextStep) {
+    const day = this.campaignDay();
+    const submitted = this.ledger.data.attempts.filter((a) => a.submitted_at);
+    const capsWithEvidence = new Set(submitted.flatMap((a) => a.capabilities));
+    const ofDays = this.pack.campaign.duration_days;
+    const ofCapabilities = this.pack.capabilities.length;
+    const position = day === null ? `Not started \u2014 ${ofDays} days when you choose to begin` : day === 0 ? `Diagnostic \u2014 before Day 1 of ${ofDays}` : `Day ${day} of ${ofDays}`;
+    const attemptWord = submitted.length === 1 ? "attempt" : "attempts";
+    const capabilityVerb = capsWithEvidence.size === 1 ? "has" : "have";
+    return {
+      campaign_position: { day, of_days: ofDays, label: position },
+      attempts: submitted.length,
+      recorded_attempts: submitted.length,
+      capabilities_with_evidence: capsWithEvidence.size,
+      of_capabilities: ofCapabilities,
+      next_step: nextStep,
+      summary: `${position}. ${submitted.length} recorded ${attemptWord}; ${capsWithEvidence.size} of ${ofCapabilities} capabilities ${capabilityVerb} evidence. Next: ${nextStep}`,
+      proof_note: "Campaign day is journey position, not proof. Evidence means work is recorded; it does not by itself mean passed, verified, credentialed, or human-reviewed."
+    };
+  }
   // ---------------------------------------------------------------- 1. todays_lens
   todaysLens(opts = {}) {
     const { campaign: cfg, contract } = { campaign: this.pack.campaign, contract: this.pack.campaign.contract };
@@ -43128,6 +43175,7 @@ Score on the '${capId}' rubric. Keep it under three minutes.`
           contract,
           intensities: cfg.intensities,
           default_intensity: cfg.default_intensity,
+          progress: this.progressSnapshot("Choose an intensity, or leave without starting."),
           instructions: "Read the contract to the learner in your own words. Ask which intensity they want. Then call todays_lens again with `intensity`, and start the diagnostic with start_mission('" + cfg.diagnostic + "')."
         };
       }
@@ -43139,14 +43187,20 @@ Score on the '${capId}' rubric. Keep it under three minutes.`
     }
     const c = this.ledger.data.campaign;
     if (c.paused) {
-      return { state: "paused", instructions: "The campaign is paused. Nothing is recorded until the learner asks to resume." };
+      return {
+        state: "paused",
+        day: this.campaignDay(),
+        of_days: cfg.duration_days,
+        intensity: c.intensity,
+        progress: this.progressSnapshot("Resume when you choose; nothing advances while paused."),
+        instructions: "The campaign is paused. Nothing is recorded until the learner asks to resume."
+      };
     }
     const day = this.campaignDay();
     const available = this.availableMissions();
     const due = this.dueReviewItems();
-    const submitted = this.ledger.data.attempts.filter((a) => a.submitted_at);
-    const capsWithEvidence = new Set(submitted.flatMap((a) => a.capabilities));
     const safety = this.pack.safety;
+    const nextStep = due.length > 0 ? `Complete ${due.length} due review${due.length === 1 ? "" : "s"} first.` : available.length > 0 ? `Choose one eligible mission: ${available[0].title}.` : "Nothing new is unlocked; wait or re-attempt one capability in a new context.";
     return {
       state: "active",
       day,
@@ -43165,11 +43219,7 @@ Score on the '${capId}' rubric. Keep it under three minutes.`
       })),
       in_progress: this.ledger.inProgress().map((a) => ({ attempt_id: a.id, mission_id: a.mission_id, started_at: a.started_at })),
       due_reviews: due.length,
-      progress: {
-        attempts: submitted.length,
-        capabilities_with_evidence: capsWithEvidence.size,
-        of_capabilities: this.pack.capabilities.length
-      },
+      progress: this.progressSnapshot(nextStep),
       budget: { max_prompts_per_day: safety.max_prompts_per_day, permitted_hours: safety.permitted_hours },
       instructions: [
         due.length > 0 ? `Run the ${due.length} due review(s) first via due_reviews.` : null,
@@ -43325,6 +43375,7 @@ Score on the '${capId}' rubric. Keep it under three minutes.`
       unaided,
       human_review_required: a.human_review_required,
       integrity_notes: integrity,
+      progress: this.progressSnapshot("Get feedback for this recorded attempt."),
       next: "Call get_feedback and deliver it in the required order."
     };
   }
@@ -43514,7 +43565,7 @@ if (problems.length) {
   process.exit(1);
 }
 var runtime = new Runtime(pack, new Ledger(ledgerPath));
-var server = new McpServer({ name: "skillable", version: "0.1.0" });
+var server = new McpServer({ name: "skillable", version: "1.0.0" });
 function ok(payload) {
   return { content: [{ type: "text", text: JSON.stringify(payload, null, 2) }] };
 }

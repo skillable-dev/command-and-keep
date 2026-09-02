@@ -8,6 +8,7 @@
 import { resolve, join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mkdirSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { loadPack, validatePack } from "./pack.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -23,15 +24,19 @@ if (problems.length) {
 
 // `root` is a local filesystem path and must not leak into the artifact.
 const { root: _root, ...embeddable } = pack;
+const serialized = JSON.stringify(embeddable);
+const packSha256 = createHash("sha256").update(serialized).digest("hex");
 
 const banner = `// GENERATED FILE — do not edit by hand.
 // Source: command-and-keep/skills/command-and-keep (pack version ${pack.campaign.version})
+// Source pack SHA-256: ${packSha256}
 // Regenerate with: npm run embed -- <output dir>   (in the command-and-keep repo)
 `;
 
 const body = `${banner}
 import type { EmbeddedPack } from "./types.ts";
 
+export const COMMAND_AND_KEEP_PACK_SHA256 = "${packSha256}";
 export const COMMAND_AND_KEEP_PACK: EmbeddedPack = ${JSON.stringify(embeddable, null, 2)} as const;
 
 export default COMMAND_AND_KEEP_PACK;
